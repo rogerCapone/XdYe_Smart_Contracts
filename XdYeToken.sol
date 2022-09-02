@@ -105,9 +105,9 @@ contract XdYe is ERC20("XdYe Token", "XdYe"), Ownable {
         );
 
         address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "LMD::delegateBySig: invalid signature");
-        require(nonce == nonces[signatory]++, "LMD::delegateBySig: invalid nonce");
-        require(now <= expiry, "LMD::delegateBySig: signature expired");
+        require(signatory != address(0), "XdYe::delegateBySig: invalid signature");
+        require(nonce == nonces[signatory]++, "XdYe::delegateBySig: invalid nonce");
+        require(now <= expiry, "XdYe::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -174,7 +174,7 @@ contract XdYe is ERC20("XdYe Token", "XdYe"), Ownable {
         internal
     {
         address currentDelegate = _delegates[delegator];
-        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying LMDs (not scaled);
+        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying XdYe (not scaled);
         _delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);
@@ -210,7 +210,7 @@ contract XdYe is ERC20("XdYe Token", "XdYe"), Ownable {
     )
         internal
     {
-        uint32 blockNumber = safe32(block.number, "LMD::_writeCheckpoint: block number exceeds 32 bits");
+        uint32 blockNumber = safe32(block.number, "XdYe::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
