@@ -38,7 +38,7 @@ contract XdYeMasterChef is Ownable {
         uint256 amount;     // How many LP tokens the user has provided.
         uint256 rewardDebt; // Reward debt. See explanation below.
         //
-        // We do some math here. Basically, any point in time, the amount of SUSHIs
+        // We do some math here. Basically, any point in time, the amount of XdYe
         // entitled to a user but is pending to be distributed is:
         //
         //   pending reward = (user.amount * pool.accXdYePerShare) - user.rewardDebt
@@ -54,7 +54,7 @@ contract XdYeMasterChef is Ownable {
     struct PoolInfo {
         IERC20 lpToken;           // Address of LP token contract.
         uint256 allocPoint;       // How many allocation points assigned to this pool. XdYe to distribute per block.
-        uint256 lastRewardBlock;  // Last block number that SUSHIs distribution occurs.
+        uint256 lastRewardBlock;  // Last block number that XdYe distribution occurs.
         uint256 accXdYePerShare; // Accumulated XdYe per share, times 1e12. See below.
     }
 
@@ -194,7 +194,7 @@ contract XdYeMasterChef is Ownable {
         uint256 xdyeReward = multiplier.mul(xdyePerBlock).mul(pool.allocPoint).div(totalAllocPoint);
 
         xdye.mint(devaddr, xdyeReward.div(10));
-        sushi.mint(address(this), xdyeReward);
+        xdye.mint(address(this), xdyeReward);
         pool.accXdYePerShare = pool.accXdYePerShare.add(xdyeReward.mul(1e12).div(lpSupply));
         pool.lastRewardBlock = block.number;
     }
@@ -208,7 +208,7 @@ contract XdYeMasterChef is Ownable {
         if (user.amount > 0) {
             uint256 pending = user.amount.mul(pool.accXdYePerShare).div(1e12).sub(user.rewardDebt);
             if(pending > 0) {
-                safeSushiTransfer(msg.sender, pending);
+                safeXdYeTransfer(msg.sender, pending);
             }
         }
         if(_amount > 0) {
@@ -248,7 +248,7 @@ contract XdYeMasterChef is Ownable {
         user.rewardDebt = 0;
     }
 
-    // Safe sushi transfer function, just in case if rounding error causes pool to not have enough SUSHIs.
+    // Safe XdYe transfer function, just in case if rounding error causes pool to not have enough XdYe.
     function safeXdYeTransfer(address _to, uint256 _amount) internal {
         uint256 xdyeBalance = xdye.balanceOf(address(this));
         if (_amount > xdyeBalance) {
