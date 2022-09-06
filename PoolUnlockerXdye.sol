@@ -18,7 +18,7 @@ contract PoolUnlockerXdye {
 
     function unlock() public payable returns (bool) {
         require(unlockList[msg.sender].unlocked != true, "Already paied");
-        governance.transfer(1000000000000000000);
+        governance.transfer(500000000000000000);
         unlockList[msg.sender].unlocked = true;
         return true;
     }
